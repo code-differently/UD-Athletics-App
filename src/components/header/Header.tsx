@@ -5,7 +5,7 @@ const Header = () => {
         <header className="header">
             <div className="header-logo">
                 <a href="/">
-                {/* <img src={logoImg} alt="UD Logo" /> */}
+                <img src="logo.webp" alt="UD Logo" />
                 </a>
             </div>
             <ul className="header-top-menu">
