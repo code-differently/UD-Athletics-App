@@ -1,5 +1,11 @@
 import React from "react";
+import  AvatarScene  from "../components/avatar/AvatarScene";
 
 export default function Page() {
-    return <h1>Hello, Next.js!</h1>
+  return (
+    <main>
+      <h1>Welcome to My App</h1>
+      <AvatarScene />  
+    </main>
+  );
   }
