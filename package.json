@@ -11,6 +11,11 @@
     "vitest": "^3.0.4"
   },
   "scripts": {
-    "test": "vitest"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "cy:open": "cypress open"
   }
 }
