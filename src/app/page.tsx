@@ -1,13 +1,14 @@
 import React from "react";
 import  AvatarScene  from "../components/avatar/AvatarScene";
 import Header from "../components/header/Header"
+import AvatarCustomizer from "../components/avatar/AvatarCustomizer";
 
 export default function Page() {
   return (
-    <main>
+    <main className="min-h-screen">
       <Header/>
       <h1>Welcome to My App</h1>
-      <AvatarScene />  
+      <AvatarCustomizer />  
     </main>
   );
   }
