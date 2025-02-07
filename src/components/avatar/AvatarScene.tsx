@@ -29,10 +29,10 @@ const AvatarScene = () => {
         directionalLight.position.set(1, 1, 1).normalize()
         scene.add(directionalLight)
 
-        const controls = new OrbitControls(camera, renderer.domElement)
-        controls.enableDamping = true
-        controls.dampingFactor = 0.25
-        controls.enableZoom = true
+        // const controls = new OrbitControls(camera, renderer.domElement)
+        // controls.enableDamping = true
+        // controls.dampingFactor = 0.25
+        // controls.enableZoom = true
 
         const raycaster = new THREE.Raycaster()
         const mouse = new THREE.Vector2()
@@ -55,14 +55,14 @@ const AvatarScene = () => {
                 const center = box.getCenter(new THREE.Vector3())
                 avatar.position.sub(center)
 
-                controls.target.copy(avatar.position)
+                // controls.target.copy(avatar.position)
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
                 const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z)
                 const cameraDistance = maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360))
                 camera.position.set(0,0, cameraDistance * 1.5)
-                controls.update()
+                // controls.update()
                 setIsLoading(false)
 
                 const headPosition = new THREE.Vector3(0, modelSize.y * 0.45, 0);
@@ -110,7 +110,7 @@ const AvatarScene = () => {
         // Animation loop
         const animate = () => {
             requestAnimationFrame(animate)
-            controls.update()
+            // controls.update()
             renderer.render(scene, camera)
         }
         animate()
