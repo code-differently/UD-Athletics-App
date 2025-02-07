@@ -17,7 +17,7 @@ const AvatarScene = () => {
         scene.background = new THREE.Color(0xf0f0f0)
 
         const camera = new THREE.PerspectiveCamera(75, 300 / 300, 0.1, 1000)
-        camera.position.z = 5
+        camera.position.set(0, 1.5, 3);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true })
         renderer.setSize(300, 300)
