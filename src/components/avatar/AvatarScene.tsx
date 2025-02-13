@@ -118,7 +118,7 @@ const AvatarScene = () => {
         }
 
         const onTouchMove = (event: TouchEvent) => {
-            if (!isTouching || event.touches.length !== 1) return
+            if (!isTouching || event.touches.length !== 1|| !avatar) return;
 
             const touch = event.touches[0]
             const deltaX = touch.clientX - startTouch.x
