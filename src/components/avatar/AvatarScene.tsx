@@ -29,11 +29,6 @@ const AvatarScene = () => {
         directionalLight.position.set(1, 1, 1).normalize()
         scene.add(directionalLight)
 
-        const controls = new OrbitControls(camera, renderer.domElement)
-        controls.enableDamping = true
-        controls.dampingFactor = 0.25
-        controls.enableZoom = true
-
         const raycaster = new THREE.Raycaster()
         const mouse = new THREE.Vector2()
 
@@ -54,14 +49,12 @@ const AvatarScene = () => {
                 const box = new THREE.Box3().setFromObject(avatar)
                 const center = box.getCenter(new THREE.Vector3())
                 avatar.position.sub(center)
-                controls.target.copy(avatar.position)
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
                 const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z)
                 const cameraDistance = maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360))
                 camera.position.set(0,0, cameraDistance * 1.5)
-                controls.update()
                 setIsLoading(false)
 
                 const headPosition = new THREE.Vector3(0, modelSize.y * 0.45, 0);
@@ -104,47 +97,6 @@ const AvatarScene = () => {
         }
 
         containerRef.current.addEventListener("click", onMouseClick)
-
-        //Mobile rotation here
-        let startTouch = { x: 0, y: 0}
-        let isTouching = false
-
-        const onTouchStart = (event: TouchEvent) => {
-            if (event.touches.length === 1) {
-                startTouch.x = event.touches[0].clientX
-                startTouch.y = event.touches[0].clientY
-                isTouching = true
-            }
-        }
-
-        const onTouchMove = (event: TouchEvent) => {
-            if (!isTouching || event.touches.length !== 1|| !avatar) return;
-
-            const touch = event.touches[0]
-            const deltaX = touch.clientX - startTouch.x
-            const deltaY = touch.clientY - startTouch.y
-
-            avatar.rotation.y += deltaX * 0.005 // sensitivity here
-            avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
-
-            //This restricts rotation 
-            if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
-            if (avatar.rotation.x < -Math.PI / 2) avatar.rotation.x = -Math.PI / 2;
-
-            startTouch.x = touch.clientX
-            startTouch.y = touch.clientY
-
-            event.preventDefault() // Prevent scrolling or other gestures
-        }
-
-        const onTouchEnd = () => {
-            isTouching = false
-        }
-
-        containerRef.current.addEventListener("touchstart", onTouchStart, { passive: false })
-        containerRef.current.addEventListener("touchmove", onTouchMove, { passive: false })
-        containerRef.current.addEventListener("touchend", onTouchEnd) 
-
 
         // Animation loop
         const animate = () => {
