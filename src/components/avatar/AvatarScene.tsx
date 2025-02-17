@@ -4,11 +4,16 @@ import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
+import ResetButton from "./ResetButton";
 
 const AvatarScene = () => {
     const clickableZoneRef = useRef <THREE.Mesh | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const controlsRef = useRef<OrbitControls | null>(null);
+    const avatarRef = useRef<THREE.Group | null>(null);
+    const [resetTrigger, setResetTrigger] = useState(0);
+
 
     useEffect(() => {            
         if (!containerRef.current) return
@@ -33,6 +38,7 @@ const AvatarScene = () => {
         controls.enableDamping = true
         controls.dampingFactor = 0.25
         controls.enableZoom = true
+        controlsRef.current = controls;
 
         const raycaster = new THREE.Raycaster()
         const mouse = new THREE.Vector2()
@@ -43,18 +49,18 @@ const AvatarScene = () => {
         loader.load(
             "/models/UDavatar.fbx",
             (object) => {
-                avatar = object
-                avatar.scale.set(0.01, 0.01, 0.01)
-                scene.add(avatar)
+                avatarRef.current = object
+                object.scale.set(0.01, 0.01, 0.01)
+                scene.add(object)
 
-                avatar.rotation.y = -Math.PI / 2; 
-                scene.add(avatar)
+                object.rotation.y = -Math.PI / 2; 
+                scene.add(object)
 
                 // Center the model
-                const box = new THREE.Box3().setFromObject(avatar)
+                const box = new THREE.Box3().setFromObject(object)
                 const center = box.getCenter(new THREE.Vector3())
-                avatar.position.sub(center)
-                avatar.position.y = -center.y
+                object.position.sub(center)
+                object.position.y = -center.y
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
@@ -149,6 +155,7 @@ const AvatarScene = () => {
         // Animation loop
         const animate = () => {
             requestAnimationFrame(animate)
+            controls.update()
             renderer.render(scene, camera)
         }
         animate()
@@ -159,9 +166,24 @@ const AvatarScene = () => {
                 containerRef.current.removeEventListener("click", onMouseClick)
             }
         }
-    }, [])
+    }, [resetTrigger])
 
-    return <div ref={containerRef} style={{ width: 300, height: 300 }}>{isLoading && <p>Loading Avatar...</p>}</div>
+    const resetAvatar = () => {
+        if (avatarRef.current && controlsRef.current) {
+            avatarRef.current.rotation.set(0, -Math.PI / 2, 0);  
+            controlsRef.current.target.set(0,0,0);
+            controlsRef.current.update(); 
+    }
+    setResetTrigger((prev) => prev + 1);
 }
 
+    return (
+        <div style={{ position: "relative", width: 300, height: 300 }}>
+            <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+                {isLoading && <p>Loading Avatar...</p>}
+            </div>
+            <ResetButton onReset={resetAvatar} />
+        </div>
+    )
+}
 export default AvatarScene
