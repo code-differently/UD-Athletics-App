@@ -47,19 +47,22 @@ const AvatarScene = () => {
                 avatar.scale.set(0.01, 0.01, 0.01)
                 scene.add(avatar)
 
-                avatar.rotation.y = Math.PI; 
+                avatar.rotation.y = -Math.PI / 2; 
                 scene.add(avatar)
 
                 // Center the model
                 const box = new THREE.Box3().setFromObject(avatar)
                 const center = box.getCenter(new THREE.Vector3())
                 avatar.position.sub(center)
+                avatar.position.y = -center.y
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
                 const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z)
                 const cameraDistance = maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360))
                 camera.position.set(0,0, cameraDistance * 1.5)
+                controls.target.set(0, center.y, 0)
+                controls.update()
                 setIsLoading(false)
 
                 const headPosition = new THREE.Vector3(0, modelSize.y * 0.45, 0);
