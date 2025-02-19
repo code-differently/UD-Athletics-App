@@ -13,7 +13,7 @@ const AvatarScene = () => {
     const controlsRef = useRef<OrbitControls | null>(null);
     const avatarRef = useRef<THREE.Group | null>(null);
     const [resetTrigger, setResetTrigger] = useState(0);
-    const [avatarRotaion, setAvatarRotation] = useState<number>(0);
+    const [avatarRotation, setAvatarRotation] = useState<number>(0);
 
     useEffect(() => {            
         if (!containerRef.current) return
@@ -166,7 +166,7 @@ const AvatarScene = () => {
                 {isLoading && <p>Loading Avatar...</p>}
             </div>
             <ResetButton onReset={resetAvatar} />
-            <BodyPartMarkers rotation={avatarRotaion} />
+            <BodyPartMarkers rotation={avatarRotation} />
         </div>
     )
 }
