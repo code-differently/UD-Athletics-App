@@ -1,5 +1,4 @@
 import AvatarScene from "./AvatarScene";
-import BodyPartMarkers from "./BodyPartMarkers";
 
 const AvatarContainer: React.FC = () => {
   return (
