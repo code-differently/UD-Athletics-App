@@ -8,7 +8,7 @@ const AvatarContainer: React.FC = () => {
       <AvatarScene />
 
       {/* Clickable Body Parts Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full">
+      <div style={{ pointerEvents: "none" }} className="absolute top-0 left-0 w-full h-full">
         <AvatarWithBodyPart />
       </div>
     </div>
