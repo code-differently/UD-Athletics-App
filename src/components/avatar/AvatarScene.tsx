@@ -5,6 +5,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
+import BodyPartMarkers from "./BodyPartMarkers";
 
 const AvatarScene = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -12,7 +13,7 @@ const AvatarScene = () => {
     const controlsRef = useRef<OrbitControls | null>(null);
     const avatarRef = useRef<THREE.Group | null>(null);
     const [resetTrigger, setResetTrigger] = useState(0);
-
+    const [avatarRotaion, setAvatarRotation] = useState<number>(0);
 
     useEffect(() => {            
         if (!containerRef.current) return
@@ -53,6 +54,7 @@ const AvatarScene = () => {
                 scene.add(object)
 
                 object.rotation.y = -Math.PI / 2; 
+                setAvatarRotation(object.rotation.y);
                 scene.add(object)
 
                 // Center the model
@@ -112,6 +114,7 @@ const AvatarScene = () => {
         
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
+                    setAvatarRotation(avatar.rotation.y);
         
                     //This restricts rotation 
                     if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
@@ -150,6 +153,7 @@ const AvatarScene = () => {
     const resetAvatar = () => {
         if (avatarRef.current && controlsRef.current) {
             avatarRef.current.rotation.set(0, -Math.PI / 2, 0);  
+            setAvatarRotation(-Math.PI / 2);
             controlsRef.current.target.set(0,0,0);
             controlsRef.current.update(); 
     }
@@ -162,6 +166,7 @@ const AvatarScene = () => {
                 {isLoading && <p>Loading Avatar...</p>}
             </div>
             <ResetButton onReset={resetAvatar} />
+            <BodyPartMarkers rotation={avatarRotaion} />
         </div>
     )
 }
