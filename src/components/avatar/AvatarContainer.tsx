@@ -1,5 +1,5 @@
 import AvatarScene from "./AvatarScene";
-import AvatarWithBodyPart from "./AvatarWithBodyPart";
+import BodyPartMarkers from "./BodyPartMarkers";
 
 const AvatarContainer: React.FC = () => {
   return (
@@ -9,7 +9,7 @@ const AvatarContainer: React.FC = () => {
 
       {/* Clickable Body Parts Overlay */}
       <div style={{ pointerEvents: "none" }} className="absolute top-0 left-0 w-full h-full">
-        <AvatarWithBodyPart />
+        <BodyPartMarkers />
       </div>
     </div>
   );

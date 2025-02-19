@@ -19,7 +19,7 @@ const bodyParts = [
   { name: "Right Ankle", position: { x: "150%", y: "50%" } },
 ];
 
-const AvatarWithBodyPart: React.FC = () => {
+const BodyPartMarkers: React.FC = () => {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     const handleResize = () => {
@@ -65,5 +65,5 @@ const AvatarWithBodyPart: React.FC = () => {
   );
 };
 
-export default AvatarWithBodyPart;
+export default BodyPartMarkers;
 
