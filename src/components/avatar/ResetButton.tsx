@@ -10,7 +10,7 @@ const ResetButton = ({ onReset }: { onReset: () => void }) => {
                 left: "50%",
                 transform: "translateX(-50%)",
                 padding: "8px 12px",
-                backgroundColor: "#ff5555",
+                backgroundColor: "#00539F",
                 color: "#fff",
                 border: "none",
                 borderRadius: "5px",
