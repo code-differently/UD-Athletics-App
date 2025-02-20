@@ -1,17 +1,23 @@
-import { XCircle } from "lucide-react"
+import { XCircle } from "lucide-react";
 
 interface HelpAffordanceProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export default function HelpAffordance({ onClose }: HelpAffordanceProps) {
   return (
-    <div data-cy="help-affordance" className="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg max-w-sm">
-      <button data-cy="help-close-btn" onClick={onClose} className="absolute bottom-0 right-0">
-        <XCircle className="h-6 w-6 text-gray-500 hover:text-gray-700" />
+    <div
+      data-cy="help-affordance"
+      className="fixed top-[10px] left-[10px] bg-[#00539f] text-white p-4 rounded-md shadow-lg w-[200px] flex flex-col items-center"
+    >
+      <p className="text-sm text-white text-center">This is help text for the avatar scene.</p>
+      <button
+        data-cy="help-close-btn"
+        onClick={onClose}
+        className="mt-2 flex items-center justify-center bg-transparent border-none cursor-pointer"
+      >
+        <XCircle className="h-5 w-5 text-white hover:text-gray-200" />
       </button>
-      <p className="text-gray-800">Interact with the avatar to learn more</p>
     </div>
-  )
+  );
 }
-

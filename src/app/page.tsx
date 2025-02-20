@@ -23,12 +23,12 @@ export default function Page() {
 
       <AvatarScene />
 
-      {showHelp && <HelpAffordance onClose={() => setShowHelp(false)} />}
+      {/* {showHelp && <HelpAffordance onClose={() => setShowHelp(false)} />}
       {!showHelp && (
         <div className="width-20">
           <HelpIcon onClick={() => setShowHelp(true)} />
-        </div>
-      )}
+        </div> */}
+      {/* )} */}
     </main>
   );
 }
