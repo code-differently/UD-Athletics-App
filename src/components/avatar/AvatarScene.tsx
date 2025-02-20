@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import ResetButton from "./ResetButton";
-import HelpAffordance from "../HelpAffordance";
+import HelpIcon from "../HelpIcon"; // Import the HelpIcon component
 
 const AvatarScene = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -14,12 +14,7 @@ const AvatarScene = () => {
     const avatarRef = useRef<THREE.Group | null>(null);
     const [resetTrigger, setResetTrigger] = useState(0);
     const [avatarRotation, setAvatarRotation] = useState<number>(0);
-    const [showHelp, setShowHelp] = useState(false);
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+    const [isHelpVisible, setIsHelpVisible] = useState(false); // For help text visibility
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -46,6 +41,9 @@ const AvatarScene = () => {
         controls.enableZoom = true;
         controlsRef.current = controls;
 
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
         const loader = new FBXLoader();
         loader.load(
             "/models/UDavatar.fbx",
@@ -57,11 +55,13 @@ const AvatarScene = () => {
                 object.rotation.y = -Math.PI / 2;
                 setAvatarRotation(object.rotation.y);
 
+                // Center the model
                 const box = new THREE.Box3().setFromObject(object);
                 const center = box.getCenter(new THREE.Vector3());
                 object.position.sub(center);
                 object.position.y = -center.y;
 
+                // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3());
                 const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z);
                 const cameraDistance = maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360));
@@ -77,6 +77,61 @@ const AvatarScene = () => {
             }
         );
 
+        // Handle click detection
+        const onMouseClick = (event: MouseEvent) => {
+            if (!containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / containerRef.current.clientWidth) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / containerRef.current.clientHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children, true);
+        };
+
+        containerRef.current.addEventListener("click", onMouseClick);
+
+        // Mobile rotation
+        let startTouch = { x: 0, y: 0 };
+        let isTouching = false;
+
+        const onTouchStart = (event: TouchEvent) => {
+            if (event.touches.length === 1) {
+                startTouch.x = event.touches[0].clientX;
+                startTouch.y = event.touches[0].clientY;
+                isTouching = true;
+            }
+        };
+
+        const onTouchMove = (event: TouchEvent) => {
+            if (!isTouching || event.touches.length !== 1 || !avatarRef.current) return;
+
+            const touch = event.touches[0];
+            const deltaX = touch.clientX - startTouch.x;
+            const deltaY = touch.clientY - startTouch.y;
+
+            avatarRef.current.rotation.y += deltaX * 0.005;
+            avatarRef.current.rotation.x -= deltaY * 0.005;
+            setAvatarRotation(avatarRef.current.rotation.y);
+
+            // Restrict rotation
+            if (avatarRef.current.rotation.x > Math.PI / 2) avatarRef.current.rotation.x = Math.PI / 2;
+            if (avatarRef.current.rotation.x < -Math.PI / 2) avatarRef.current.rotation.x = -Math.PI / 2;
+
+            startTouch.x = touch.clientX;
+            startTouch.y = touch.clientY;
+
+            event.preventDefault();
+        };
+
+        const onTouchEnd = () => {
+            isTouching = false;
+        };
+
+        containerRef.current.addEventListener("touchstart", onTouchStart, { passive: false });
+        containerRef.current.addEventListener("touchmove", onTouchMove, { passive: false });
+        containerRef.current.addEventListener("touchend", onTouchEnd);
+
+        // Animation loop
         const animate = () => {
             requestAnimationFrame(animate);
             controls.update();
@@ -87,6 +142,7 @@ const AvatarScene = () => {
         return () => {
             if (containerRef.current) {
                 containerRef.current.removeChild(renderer.domElement);
+                containerRef.current.removeEventListener("click", onMouseClick);
             }
         };
     }, [resetTrigger]);
@@ -101,37 +157,60 @@ const AvatarScene = () => {
         setResetTrigger((prev) => prev + 1);
     };
 
-    if (!isClient) return null;
+    // Help toggle function
+    const toggleHelp = () => {
+        setIsHelpVisible(!isHelpVisible);
+    };
+
+    // Close the help text
+    const closeHelp = () => {
+        setIsHelpVisible(false);
+    };
 
     return (
         <div style={{ position: "relative", width: 300, height: 300 }}>
             <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
                 {isLoading && <p>Loading Avatar...</p>}
             </div>
-
             <ResetButton onReset={resetAvatar} />
 
-            {/* Help text appears at bottom-left when toggled */}
-            {showHelp && (
-                <div className="absolute bottom-2 left-2 w-[250px] p-2 bg-[#00539f] text-white rounded-md shadow-lg">
-                    <p className="text-sm">This is help text for the avatar scene.</p>
-                    <button 
-                        onClick={() => setShowHelp(false)}
-                        className="mt-2 flex items-center justify-center bg-transparent border-none cursor-pointer text-white hover:text-gray-200"
-                    >
-                        Close
-                    </button>
-                </div>
-            )}
+            {/* Help Icon at the top-left */}
+            <HelpIcon onClick={toggleHelp} />
 
-            {/* Help Button at the top-left */}
-            {!showHelp && (
-                <button 
-                    onClick={() => setShowHelp(true)}
-                    className="absolute top-2 left-2 bg-[#00539f] text-white w-6 h-6 rounded-full cursor-pointer flex items-center justify-center shadow-md text-base"
+            {/* Help Text */}
+            {isHelpVisible && (
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: "10px",
+                        left: "10px",
+                        background: "rgba(0, 83, 159, 0.8)", // Same background as the Help Icon
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        zIndex: 1000,
+                        maxWidth: "250px",
+                    }}
                 >
-                    ?
-                </button>
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: "5px",
+                            right: "5px",
+                            color: "white",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                        }}
+                        onClick={closeHelp}
+                        data-cy="help-close-btn" 
+                    >
+                        X
+                    </div>
+                    <p>
+                        This is help text for the avatar scene.
+                    </p>
+                </div>
             )}
         </div>
     );
