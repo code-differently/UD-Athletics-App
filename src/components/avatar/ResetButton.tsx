@@ -18,7 +18,7 @@ const ResetButton = ({ onReset }: { onReset: () => void }) => {
                 fontSize: "14px"
             }}
         >
-            Reset Avatar
+            Learn More
         </button>
     );
 };
