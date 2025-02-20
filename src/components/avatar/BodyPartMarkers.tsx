@@ -18,11 +18,8 @@ const bodyParts = [
   { name: "Right Ankle", position: { x: "-7%", y: "21%" } },
 ];
 
-interface BodyPartMarkersProps {
-  rotation: number; // Rotation in radians (for avatar's rotation)
-}
 
-const BodyPartMarkers: React.FC<BodyPartMarkersProps> = ({ rotation }) => {
+const BodyPartMarkers: React.FC = () => {
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   useEffect(() => {
     const handleResize = () => {
@@ -48,18 +45,17 @@ const BodyPartMarkers: React.FC<BodyPartMarkersProps> = ({ rotation }) => {
 
         const left = (parseFloat(x) / 100) * windowSize.width;
         const top = (parseFloat(y) / 100) * windowSize.height;
-
-        const transform = `translate(-50%, -50%) rotate(${rotation}rad)`;
+         //for smaller screens
+        const markerSize = windowSize.width < 600 ? "w-1 h-2" : "w-2 h-2";
 
     return (
         <div
           key={index}
           onClick={() => handleClick(part.name)}
-          className="absolute w-2 h-2 bg-blue-500 rounded-full cursor-pointer opacity-75 hover:opacity-100 transition pointer-events-auto :active:bg-yellow-500"
+          className="absolute ${markerSize} bg-blue-500 rounded-full cursor-pointer opacity-75 hover:opacity-100 transition pointer-events-auto"
           style={{
             top: `${left}px`,
-            left: `${top}px`,
-            transform,
+            left: `${top}px`
           }}
         >
           <span className="sr-only">{part.name}</span>
