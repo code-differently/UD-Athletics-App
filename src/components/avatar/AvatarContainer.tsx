@@ -1,13 +1,47 @@
+"use client"
 import AvatarScene from "./AvatarScene";
-import BodyPartMarkers from "./BodyPartMarkers";
+import React, { useEffect, useState } from "react";
+
+const bodyParts = [
+  { name: "Head", position: { x: "50.4%", y: "15%" } },
+  { name: "Chest", position: { x: "50%", y: "50%" } },
+  { name: "Left Arm", position: { x: "33%", y: "50%" } },
+  { name: "Right Arm", position: { x: "67%", y: "50%" } },
+  { name: "Left Leg", position: { x: "40%", y: "70%" } },
+  { name: "Right Leg", position: { x: "60%", y: "70%" } },
+];
+
 
 const AvatarContainer: React.FC = () => {
+  const [selectedPart, setSelectedPart] = useState<string | null>(null);
+
+  const handleClick = (part: string) => {
+    setSelectedPart(part);
+    alert(`You clicked on ${part}`);
+  };
+
   return (
     <div className="relative w-[300px] h-[300px]">
       {/* Avatar Scene (3D Model) */}
       <AvatarScene />
-      {/* Body Part Markers overlay*/}
-      <BodyPartMarkers />
+
+       {/* Overlay clickable markers */}
+       {bodyParts.map((part, index) => (
+        <div
+          key={index}
+          onClick={() => handleClick(part.name)}
+          className="absolute bg-blue-500 rounded-full opacity-75 hover:opacity-100 transition cursor-pointer"
+          style={{
+            top: part.position.y,
+            left: part.position.x,
+            width: "15px",
+            height: "15px",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
+          <span className="sr-only">{part.name}</span>
+        </div>
+      ))}
     </div>
 
   );
