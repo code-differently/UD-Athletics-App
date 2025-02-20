@@ -2,31 +2,34 @@
 import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
-const bodyParts = [
-  { name: "Head", position: { x: "50.4%", y: "15%" } },
-  { name: "Chest", position: { x: "50%", y: "50%" } },
-  { name: "Left Arm", position: { x: "33%", y: "50%" } },
-  { name: "Right Arm", position: { x: "67%", y: "50%" } },
-  { name: "Left Leg", position: { x: "40%", y: "70%" } },
-  { name: "Right Leg", position: { x: "60%", y: "70%" } },
-];
-
-
 const AvatarContainer: React.FC = () => {
-  const [selectedPart, setSelectedPart] = useState<string | null>(null);
+  const [markersVisible, setMarkersVisible] = useState(true);
+
+  const handleCameraMove = (moving: boolean) => {
+    setMarkersVisible(!moving);
+  };
+
+  const bodyParts = [
+    { name: "Head", position: { x: "50.4%", y: "15%" } },
+    { name: "Chest", position: { x: "50%", y: "50%" } },
+    { name: "Left Arm", position: { x: "33%", y: "50%" } },
+    { name: "Right Arm", position: { x: "67%", y: "50%" } },
+    { name: "Left Leg", position: { x: "40%", y: "70%" } },
+    { name: "Right Leg", position: { x: "60%", y: "70%" } },
+  ];
+  
 
   const handleClick = (part: string) => {
-    setSelectedPart(part);
     alert(`You clicked on ${part}`);
   };
 
   return (
     <div className="relative w-[300px] h-[300px]">
       {/* Avatar Scene (3D Model) */}
-      <AvatarScene />
+      <AvatarScene onCameraMove={handleCameraMove}/>
 
        {/* Overlay clickable markers */}
-       {bodyParts.map((part, index) => (
+       {markersVisible && bodyParts.map((part, index) => (
         <div
           key={index}
           onClick={() => handleClick(part.name)}

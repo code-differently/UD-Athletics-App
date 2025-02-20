@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
 
-const AvatarScene = () => {
+const AvatarScene = ({onCameraMove}: {onCameraMove: (moving: boolean) => void}) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const controlsRef = useRef<OrbitControls | null>(null);
@@ -76,7 +76,11 @@ const AvatarScene = () => {
                 console.error("Error loading avatar model:", error)
                 setIsLoading(false)
             }
-        )
+        );
+
+        controls.addEventListener("change", () => {
+            onCameraMove(true);
+        });
 
         // Handle click detection
         const onMouseClick = (event: MouseEvent) => {
@@ -114,6 +118,7 @@ const AvatarScene = () => {
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
                     setAvatarRotation(avatar.rotation.y);
+                    onCameraMove(true);
         
                     //This restricts rotation 
                     if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
