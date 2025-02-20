@@ -5,7 +5,6 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
-import BodyPartMarkers from "./BodyPartMarkers";
 
 const AvatarScene = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -166,7 +165,6 @@ const AvatarScene = () => {
                 {isLoading && <p>Loading Avatar...</p>}
             </div>
             <ResetButton onReset={resetAvatar} />
-            <BodyPartMarkers rotation={avatarRotation} />
         </div>
     )
 }
