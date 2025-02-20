@@ -3,8 +3,6 @@ import './globals.css';;
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
-// Importing global styles in a way that works across different setups
-import '../globals.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
