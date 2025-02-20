@@ -3,11 +3,6 @@ import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
 const AvatarContainer: React.FC = () => {
-  const [markersVisible, setMarkersVisible] = useState(true);
-
-  const handleCameraMove = (moving: boolean) => {
-    setMarkersVisible(!moving);
-  };
 
   const bodyParts = [
     { name: "Head", position: { x: "50.4%", y: "15%" } },
@@ -26,10 +21,10 @@ const AvatarContainer: React.FC = () => {
   return (
     <div className="relative w-[300px] h-[300px]">
       {/* Avatar Scene (3D Model) */}
-      <AvatarScene onCameraMove={handleCameraMove}/>
+      <AvatarScene />
 
        {/* Overlay clickable markers */}
-       {markersVisible && bodyParts.map((part, index) => (
+       { bodyParts.map((part, index) => (
         <div
           key={index}
           onClick={() => handleClick(part.name)}

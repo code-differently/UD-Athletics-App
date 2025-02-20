@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
 
-const AvatarScene = ({onCameraMove}: {onCameraMove: (moving: boolean) => void}) => {
+const AvatarScene = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const controlsRef = useRef<OrbitControls | null>(null);
@@ -70,6 +70,7 @@ const AvatarScene = ({onCameraMove}: {onCameraMove: (moving: boolean) => void}) 
                 controls.target.set(0, center.y, 0)
                 controls.update()
                 setIsLoading(false)
+
             },
             undefined,
             (error) => {
@@ -78,9 +79,6 @@ const AvatarScene = ({onCameraMove}: {onCameraMove: (moving: boolean) => void}) 
             }
         );
 
-        controls.addEventListener("change", () => {
-            onCameraMove(true);
-        });
 
         // Handle click detection
         const onMouseClick = (event: MouseEvent) => {
@@ -118,7 +116,6 @@ const AvatarScene = ({onCameraMove}: {onCameraMove: (moving: boolean) => void}) 
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
                     setAvatarRotation(avatar.rotation.y);
-                    onCameraMove(true);
         
                     //This restricts rotation 
                     if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
