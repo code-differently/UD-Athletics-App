@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import Header from '../components/header/Header';
-import AvatarScene from '../components/avatar/AvatarScene';
+import AvatarContainer from '../components/avatar/AvatarContainer';
 import HelpAffordance from '../components/HelpAffordance';
 import HelpIcon from '../components/HelpIcon';
 
@@ -21,7 +21,7 @@ export default function Page() {
       <Header />
       <h1 className="text-4xl font-bold mb-8">Avatar Model Page</h1>
 
-      <AvatarScene />
+      <AvatarContainer />
 
     </main>
   );
