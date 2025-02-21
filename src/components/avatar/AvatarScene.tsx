@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react"
-import * as THREE from "three"
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import ResetButton from "./ResetButton";
+import { BeatLoader } from "react-spinners";
+import HelpIcon from "../HelpIcon"; 
 
 
 const AvatarScene = ({ onRotate, resetTrigger  }) => {
@@ -11,40 +14,40 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
     const [isLoading, setIsLoading] = useState(true);
     const controlsRef = useRef<OrbitControls | null>(null);
     const avatarRef = useRef<THREE.Group | null>(null);
+    const [isHelpVisible, setIsHelpVisible] = useState(false); // For help text visibility
     const [avatarRotation, setAvatarRotation] = useState(-Math.PI / 2);
     let rotationTimeout: NodeJS.Timeout | null = null;
-    
-    useEffect(() => {         
+
+    useEffect(() => {     
         if (avatarRef.current && controlsRef.current) {
             avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
             setAvatarRotation(-Math.PI / 2);
             controlsRef.current.target.set(0, 0, 0);
             controlsRef.current.update();
             onRotate(false);
-        }
-
+        }       
         if (!containerRef.current) return
 
-        const scene = new THREE.Scene()
-        scene.background = new THREE.Color(0xf0f0f0)
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
 
-        const camera = new THREE.PerspectiveCamera(75, 300 / 300, 0.1, 1000)
+        const camera = new THREE.PerspectiveCamera(75, 300 / 300, 0.1, 1000);
         camera.position.set(0, 1.5, 3);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true })
-        renderer.setSize(300, 300)
-        containerRef.current.appendChild(renderer.domElement)
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(300, 300);
+        containerRef.current.appendChild(renderer.domElement);
 
-        const light = new THREE.AmbientLight(0xffffff, 0.5)
-        scene.add(light)
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8)
-        directionalLight.position.set(1, 1, 1).normalize()
-        scene.add(directionalLight)
+        const light = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(light);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(1, 1, 1).normalize();
+        scene.add(directionalLight);
 
-        const controls = new OrbitControls(camera, renderer.domElement)
-        controls.enableDamping = true
-        controls.dampingFactor = 0.25
-        controls.enableZoom = true
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.enableZoom = true;
         controlsRef.current = controls;
 
         controls.addEventListener("start", () => {
@@ -57,12 +60,20 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
         });
         
 
-        const raycaster = new THREE.Raycaster()
-        const mouse = new THREE.Vector2()
-
-        const loader = new FBXLoader()
+        controls.addEventListener("start", () => {
+            console.log("Rotation started!");
+            onRotate(true); // Hide markers when rotation starts
+        });
+        controls.addEventListener("end", () => {
+            console.log("Rotation ended!");
+            setTimeout(() => onRotate(false), 1000); // Delay to prevent flickering
+        });
+        
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
         let avatar: THREE.Group | THREE.Mesh
 
+        const loader = new FBXLoader();
         loader.load(
             "/models/UDavatar.fbx",
             (object) => {
@@ -76,10 +87,10 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
                 setIsLoading(false);
 
                 // Center the model
-                const box = new THREE.Box3().setFromObject(object)
-                const center = box.getCenter(new THREE.Vector3())
-                object.position.sub(center)
-                object.position.y = -center.y 
+                const box = new THREE.Box3().setFromObject(object);
+                const center = box.getCenter(new THREE.Vector3());
+                object.position.sub(center);
+                object.position.y = -center.y;
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
@@ -93,8 +104,8 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
             },
             undefined,
             (error) => {
-                console.error("Error loading avatar model:", error)
-                setIsLoading(false)
+                console.error("Error loading avatar model:", error);
+                setIsLoading(false);
             }
         );
 
@@ -135,6 +146,7 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
                     setAvatarRotation(avatar.rotation.y);
+                    setAvatarRotation(avatar.rotation.y);
 
                     onRotate(true);
         
@@ -147,7 +159,7 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
         
                     event.preventDefault() // Prevent scrolling or other gestures
                 }
-
+        
                 const startRotation = () => {
                     onRotate(true); // Notify parent
                     if (rotationTimeout) clearTimeout(rotationTimeout);
@@ -156,21 +168,15 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
                 const stopRotation = () => {
                     if (rotationTimeout) clearTimeout(rotationTimeout);
                 };
-
-                renderer.domElement.addEventListener("mousedown", startRotation);
-                renderer.domElement.addEventListener("mousemove", startRotation);
-                renderer.domElement.addEventListener("mouseup", stopRotation);
-                renderer.domElement.addEventListener("touchstart", startRotation);
-                renderer.domElement.addEventListener("touchmove", startRotation);
-                renderer.domElement.addEventListener("touchend", stopRotation);
+        
 
         // Animation loop
         const animate = () => {
-            requestAnimationFrame(animate)
-            controls.update()
-            renderer.render(scene, camera)
-        }
-        animate()
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        };
+        animate();
 
         return () => {
             renderer.domElement.addEventListener("mousedown", startRotation);
@@ -180,19 +186,83 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
             renderer.domElement.addEventListener("touchmove", startRotation);
             renderer.domElement.addEventListener("touchend", stopRotation);
             if (containerRef.current) {
-                containerRef.current.removeChild(renderer.domElement)
-                containerRef.current.removeEventListener("click", onMouseClick)
+                containerRef.current.removeChild(renderer.domElement);
+                containerRef.current.removeEventListener("click", onMouseClick);
             }
-        }
-    }, [resetTrigger])
+        };
+    }, [resetTrigger]);
 
+    const resetAvatar = () => {
+        if (avatarRef.current && controlsRef.current) {
+            avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
+            setAvatarRotation(-Math.PI / 2);
+            controlsRef.current.target.set(0, 0, 0);
+            controlsRef.current.update();
+        }
+        resetTrigger((prev) => prev + 1);
+    };
+
+    // Help toggle function
+    const toggleHelp = () => {
+        setIsHelpVisible(!isHelpVisible);
+    };
+
+    // Close the help text
+    const closeHelp = () => {
+        setIsHelpVisible(false);
+    };
 
     return (
         <div style={{ position: "relative", width: 300, height: 300 }}>
             <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-                {isLoading && <p>Loading Avatar...</p>}
+                {isLoading && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <BeatLoader size={40} color="#3498db" loading={isLoading} />
+          </div>
+        )}
             </div>
+            <ResetButton onReset={resetAvatar} />
+
+            {/* Help Icon at the top-left */}
+            <HelpIcon onClick={toggleHelp} />
+
+            {/* Help Text */}
+            {isHelpVisible && (
+                <div
+                    style={{
+                        position: "absolute",
+                        bottom: "10px",
+                        left: "10px",
+                        background: "rgba(0, 83, 159, 0.8)", // Same background as the Help Icon
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        zIndex: 1000,
+                        maxWidth: "250px",
+                    }}
+                >
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: "5px",
+                            right: "5px",
+                            color: "white",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                        }}
+                        onClick={closeHelp}
+                        data-cy="help-close-btn" 
+                    >
+                        X
+                    </div>
+                    <p>
+                        This is help text for the avatar scene.
+                    </p>
+                </div>
+            )}
         </div>
-    )
-}
-export default AvatarScene
+    );
+};
+
+export default AvatarScene;
