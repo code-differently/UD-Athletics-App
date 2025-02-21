@@ -4,17 +4,23 @@ import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
-import ResetButton from "./ResetButton";
 
-const AvatarScene = () => {
+
+const AvatarScene = ({ onRotate, resetTrigger  }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const controlsRef = useRef<OrbitControls | null>(null);
     const avatarRef = useRef<THREE.Group | null>(null);
-    const [resetTrigger, setResetTrigger] = useState(0);
-    const [avatarRotation, setAvatarRotation] = useState<number>(0);
+    const [avatarRotation, setAvatarRotation] = useState(-Math.PI / 2);
+    let rotationTimeout: NodeJS.Timeout | null = null;
+    useEffect(() => {         
+        if (avatarRef.current && controlsRef.current) {
+            avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
+            setAvatarRotation(-Math.PI / 2);
+            controlsRef.current.target.set(0, 0, 0);
+            controlsRef.current.update();
+        }
 
-    useEffect(() => {            
         if (!containerRef.current) return
 
         const scene = new THREE.Scene()
@@ -60,7 +66,7 @@ const AvatarScene = () => {
                 const box = new THREE.Box3().setFromObject(object)
                 const center = box.getCenter(new THREE.Vector3())
                 object.position.sub(center)
-                object.position.y = -center.y
+                object.position.y = -center.y 
 
                 // Adjust camera distance
                 const modelSize = box.getSize(new THREE.Vector3())
@@ -116,6 +122,8 @@ const AvatarScene = () => {
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
                     setAvatarRotation(avatar.rotation.y);
+
+                    onRotate(true);
         
                     //This restricts rotation 
                     if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
@@ -126,14 +134,25 @@ const AvatarScene = () => {
         
                     event.preventDefault() // Prevent scrolling or other gestures
                 }
+
+                const startRotation = () => {
+                    onRotate(true); // Notify parent
+                    if (rotationTimeout) clearTimeout(rotationTimeout);
+                };
         
-                const onTouchEnd = () => {
-                    isTouching = false
-                }
-        
-                containerRef.current.addEventListener("touchstart", onTouchStart, { passive: false })
-                containerRef.current.addEventListener("touchmove", onTouchMove, { passive: false })
-                containerRef.current.addEventListener("touchend", onTouchEnd) 
+                const stopRotation = () => {
+                    if (rotationTimeout) clearTimeout(rotationTimeout);
+                    rotationTimeout = setTimeout(() => {
+                        onRotate(false); 
+                    }, 1000); 
+                };
+
+                renderer.domElement.addEventListener("mousedown", startRotation);
+                renderer.domElement.addEventListener("mousemove", startRotation);
+                renderer.domElement.addEventListener("mouseup", stopRotation);
+                renderer.domElement.addEventListener("touchstart", startRotation);
+                renderer.domElement.addEventListener("touchmove", startRotation);
+                renderer.domElement.addEventListener("touchend", stopRotation);
 
         // Animation loop
         const animate = () => {
@@ -144,6 +163,12 @@ const AvatarScene = () => {
         animate()
 
         return () => {
+            renderer.domElement.addEventListener("mousedown", startRotation);
+            renderer.domElement.addEventListener("mousemove", startRotation);
+            renderer.domElement.addEventListener("mouseup", stopRotation);
+            renderer.domElement.addEventListener("touchstart", startRotation);
+            renderer.domElement.addEventListener("touchmove", startRotation);
+            renderer.domElement.addEventListener("touchend", stopRotation);
             if (containerRef.current) {
                 containerRef.current.removeChild(renderer.domElement)
                 containerRef.current.removeEventListener("click", onMouseClick)
@@ -151,22 +176,12 @@ const AvatarScene = () => {
         }
     }, [resetTrigger])
 
-    const resetAvatar = () => {
-        if (avatarRef.current && controlsRef.current) {
-            avatarRef.current.rotation.set(0, -Math.PI / 2, 0);  
-            setAvatarRotation(-Math.PI / 2);
-            controlsRef.current.target.set(0,0,0);
-            controlsRef.current.update(); 
-    }
-    setResetTrigger((prev) => prev + 1);
-}
 
     return (
         <div style={{ position: "relative", width: 300, height: 300 }}>
             <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
                 {isLoading && <p>Loading Avatar...</p>}
             </div>
-            <ResetButton onReset={resetAvatar} />
         </div>
     )
 }
