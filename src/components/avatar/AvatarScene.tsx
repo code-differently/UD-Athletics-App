@@ -5,6 +5,8 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
+import { BeatLoader } from "react-spinners";
+
 
 const AvatarScene = () => {
     const clickableZoneRef = useRef <THREE.Mesh | null>(null);
@@ -180,7 +182,11 @@ const AvatarScene = () => {
     return (
         <div style={{ position: "relative", width: 300, height: 300 }}>
             <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-                {isLoading && <p>Loading Avatar...</p>}
+                {isLoading && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <BeatLoader size={40} color="#FFD200" loading={isLoading} />
+          </div>
+        )}
             </div>
             <ResetButton onReset={resetAvatar} />
         </div>
