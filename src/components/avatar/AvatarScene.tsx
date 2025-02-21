@@ -221,7 +221,6 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
           </div>
         )}
             </div>
-            <ResetButton onReset={resetAvatar} />
 
             {/* Help Icon at the top-left */}
             <HelpIcon onClick={toggleHelp} />
