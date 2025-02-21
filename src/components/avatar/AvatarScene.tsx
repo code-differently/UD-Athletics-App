@@ -43,6 +43,7 @@ const AvatarScene = () => {
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+        let avatar: THREE.Group | THREE.Mesh
 
         const loader = new FBXLoader();
         loader.load(
@@ -154,7 +155,6 @@ const AvatarScene = () => {
     const resetAvatar = () => {
         if (avatarRef.current && controlsRef.current) {
             avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
-            setAvatarRotation(-Math.PI / 2);
             setAvatarRotation(-Math.PI / 2);
             controlsRef.current.target.set(0, 0, 0);
             controlsRef.current.update();
