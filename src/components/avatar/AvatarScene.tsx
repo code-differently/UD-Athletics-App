@@ -7,13 +7,12 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader"
 import ResetButton from "./ResetButton";
 
 const AvatarScene = () => {
-    const clickableZoneRef = useRef <THREE.Mesh | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
     const controlsRef = useRef<OrbitControls | null>(null);
     const avatarRef = useRef<THREE.Group | null>(null);
     const [resetTrigger, setResetTrigger] = useState(0);
-
+    const [avatarRotation, setAvatarRotation] = useState<number>(0);
 
     useEffect(() => {            
         if (!containerRef.current) return
@@ -54,6 +53,7 @@ const AvatarScene = () => {
                 scene.add(object)
 
                 object.rotation.y = -Math.PI / 2; 
+                setAvatarRotation(object.rotation.y);
                 scene.add(object)
 
                 // Center the model
@@ -71,33 +71,18 @@ const AvatarScene = () => {
                 controls.update()
                 setIsLoading(false)
 
-                const headPosition = new THREE.Vector3(0, modelSize.y * 0.45, 0);
-                const circleGeometry = new THREE.CircleGeometry(0.3, 32);
-                const circleMaterial = new THREE.MeshBasicMaterial({
-                    color: "red",
-                    transparent: true,
-                    opacity: 0.5,
-                    visible: true,
-                });
-
-                const clickableZone = new THREE.Mesh(circleGeometry, circleMaterial);
-                clickableZone.position.copy(headPosition);
-                clickableZone.rotation.x = Math.PI / 2;
-                clickableZone.userData.clickable = true;
-
-                scene.add(clickableZone);
-                clickableZoneRef.current = clickableZone;
             },
             undefined,
             (error) => {
                 console.error("Error loading avatar model:", error)
                 setIsLoading(false)
             }
-        )
+        );
+
 
         // Handle click detection
         const onMouseClick = (event: MouseEvent) => {
-            if (!containerRef.current || !clickableZoneRef.current) return
+            if (!containerRef.current ) return
             const rect = containerRef.current.getBoundingClientRect()
             mouse.x = ((event.clientX - rect.left) / containerRef.current.clientWidth) * 2 - 1
             mouse.y = -((event.clientY - rect.top) / containerRef.current.clientHeight) * 2 + 1
@@ -105,9 +90,6 @@ const AvatarScene = () => {
             raycaster.setFromCamera(mouse, camera)
             const intersects = raycaster.intersectObjects(scene.children, true)
 
-                if (intersects.length > 0){
-                alert("Helmet clicked! Displaying info/video...")
-            }
         }
 
     containerRef.current.addEventListener("click", onMouseClick)
@@ -133,6 +115,7 @@ const AvatarScene = () => {
         
                     avatar.rotation.y += deltaX * 0.005 // sensitivity here
                     avatar.rotation.x -= deltaY * 0.005 // also sensitivity is here
+                    setAvatarRotation(avatar.rotation.y);
         
                     //This restricts rotation 
                     if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
@@ -171,6 +154,7 @@ const AvatarScene = () => {
     const resetAvatar = () => {
         if (avatarRef.current && controlsRef.current) {
             avatarRef.current.rotation.set(0, -Math.PI / 2, 0);  
+            setAvatarRotation(-Math.PI / 2);
             controlsRef.current.target.set(0,0,0);
             controlsRef.current.update(); 
     }
