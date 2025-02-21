@@ -13,12 +13,14 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
     const avatarRef = useRef<THREE.Group | null>(null);
     const [avatarRotation, setAvatarRotation] = useState(-Math.PI / 2);
     let rotationTimeout: NodeJS.Timeout | null = null;
+    
     useEffect(() => {         
         if (avatarRef.current && controlsRef.current) {
             avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
             setAvatarRotation(-Math.PI / 2);
             controlsRef.current.target.set(0, 0, 0);
             controlsRef.current.update();
+            onRotate(false);
         }
 
         if (!containerRef.current) return
@@ -45,6 +47,16 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
         controls.enableZoom = true
         controlsRef.current = controls;
 
+        controls.addEventListener("start", () => {
+            console.log("Rotation started!");
+            onRotate(true); // Hide markers when rotation starts
+        });
+        controls.addEventListener("end", () => {
+            console.log("Rotation ended!");
+            setTimeout(() => onRotate(false), 1000); // Delay to prevent flickering
+        });
+        
+
         const raycaster = new THREE.Raycaster()
         const mouse = new THREE.Vector2()
 
@@ -61,6 +73,7 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
                 object.rotation.y = -Math.PI / 2; 
                 setAvatarRotation(object.rotation.y);
                 scene.add(object)
+                setIsLoading(false);
 
                 // Center the model
                 const box = new THREE.Box3().setFromObject(object)
@@ -142,9 +155,6 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
         
                 const stopRotation = () => {
                     if (rotationTimeout) clearTimeout(rotationTimeout);
-                    rotationTimeout = setTimeout(() => {
-                        onRotate(false); 
-                    }, 1000); 
                 };
 
                 renderer.domElement.addEventListener("mousedown", startRotation);
