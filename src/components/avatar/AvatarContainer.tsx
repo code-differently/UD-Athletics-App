@@ -26,7 +26,6 @@ const AvatarContainer: React.FC = () => {
     setResetTrigger((prev) => prev + 1); // 🔹 Trigger marker reset
 };
 
-// 🔹 Effect: Show markers when resetTrigger updates
 useEffect(() => {
     console.log("Reset Triggered:", resetTrigger);
     setShowMarkers(true);
@@ -38,8 +37,7 @@ useEffect(() => {
       console.log("Rotation Started - Hiding Markers");
       setShowMarkers(false); // Hide markers when rotating
   } else {
-      console.log("Rotation Stopped - Showing Markers");
-      setTimeout(() => setShowMarkers(true), 1000); // Show after rotation stops
+      console.log("Rotation Stopped");
   }
 };
 
@@ -71,7 +69,9 @@ useEffect(() => {
       ))}
 
       {/* Reset Button */}
-        <button onClick={resetAvatar} className="mt-4 p-2 bg-gray-800 text-white rounded">Learn More!</button>
+        <button onClick={resetAvatar} 
+        className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 p-2 bg-gray-800 text-white rounded-lg transition-all duration-300">Learn More!
+        </button>
     </div>
 
   );
