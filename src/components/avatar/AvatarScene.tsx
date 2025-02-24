@@ -214,7 +214,7 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
 
     return (
         <div style={{ position: "relative", width: 300, height: 300 }}>
-            <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
+            <div ref={containerRef} data-testid="avatar-container" style={{ width: "100%", height: "100%" }}>
                 {isLoading && (
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <BeatLoader size={40} color="#3498db" loading={isLoading} />
