@@ -256,7 +256,7 @@ const AvatarScene = ({ onRotate, resetTrigger  }) => {
                         X
                     </div>
                     <p>
-                        This is help text for the avatar scene.
+                        Touch the dots to learn more about the Blue Hen Edge!
                     </p>
                 </div>
             )}
