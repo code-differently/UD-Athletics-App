@@ -10,12 +10,12 @@ const AvatarContainer: React.FC = () => {
 
   
   const bodyParts = [
-    { name: "Head", position: { x: "50.4%", y: "15%" } },
-    { name: "Chest", position: { x: "50%", y: "50%" } },
-    { name: "Left Arm", position: { x: "33%", y: "50%" } },
-    { name: "Right Arm", position: { x: "67%", y: "50%" } },
-    { name: "Left Leg", position: { x: "40%", y: "70%" } },
-    { name: "Right Leg", position: { x: "60%", y: "70%" } },
+    { id: "head", name: "Head", position: { x: "50.4%", y: "15%" } },
+    { id: "chest", name: "Chest", position: { x: "50%", y: "50%" } },
+    { id: "left-arm", name: "Left Arm", position: { x: "33%", y: "50%" } },
+    { id: "right-arm", name: "Right Arm", position: { x: "67%", y: "50%" } },
+    { id: "left-leg", name: "Left Leg", position: { x: "40%", y: "70%" } },
+    { id: "right-leg", name: "Right Leg", position: { x: "60%", y: "70%" } },
   ];
   
 
@@ -57,6 +57,7 @@ useEffect(() => {
        bodyParts.map((part, index) => (
         <div
           key={index}
+          id={`marker-${part.id}`}
           onClick={() => handleClick(part.name)}
           className="absolute bg-blue-500 rounded-full opacity-75 hover:opacity-100 transition cursor-pointer"
           style={{
