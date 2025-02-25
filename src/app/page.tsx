@@ -2,8 +2,6 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/header/Header';
 import AvatarContainer from '../components/avatar/AvatarContainer';
-import HelpAffordance from '../components/HelpAffordance';
-import HelpIcon from '../components/HelpIcon';
 
 export default function Page() {
   const [showHelp, setShowHelp] = useState(true);
