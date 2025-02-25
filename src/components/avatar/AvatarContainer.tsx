@@ -1,9 +1,8 @@
-"use client"
+"use client";
 import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
 const AvatarContainer: React.FC = () => {
-
   const bodyParts = [
     { name: "Head", position: { x: "50.4%", y: "15%" } },
     { name: "Chest", position: { x: "50%", y: "50%" } },
@@ -12,7 +11,6 @@ const AvatarContainer: React.FC = () => {
     { name: "Left Leg", position: { x: "40%", y: "70%" } },
     { name: "Right Leg", position: { x: "60%", y: "70%" } },
   ];
-  
 
   const handleClick = (part: string) => {
     alert(`You clicked on ${part}`);
@@ -23,8 +21,8 @@ const AvatarContainer: React.FC = () => {
       {/* Avatar Scene (3D Model) */}
       <AvatarScene />
 
-       {/* Overlay clickable markers */}
-       { bodyParts.map((part, index) => (
+      {/* Overlay clickable markers */}
+      {bodyParts.map((part, index) => (
         <div
           key={index}
           onClick={() => handleClick(part.name)}
@@ -41,7 +39,6 @@ const AvatarContainer: React.FC = () => {
         </div>
       ))}
     </div>
-
   );
 };
 
