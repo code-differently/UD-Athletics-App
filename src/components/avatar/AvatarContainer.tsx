@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 
 const AvatarContainer: React.FC = () => {
   const [isRotating, setIsRotating] = useState(false);
-  const [hasLoaded, setHasLoaded] = useState(false);
     const [showMarkers, setShowMarkers] = useState(true);
     const [resetTrigger, setResetTrigger] = useState(0);
+    const [disableMarkersInteraction, setDisableMarkersInteraction] = useState(false);
+
   
   const bodyParts = [
     { name: "Head", position: { x: "50.4%", y: "15%" } },
@@ -35,9 +36,11 @@ useEffect(() => {
     setIsRotating(rotating);
     if (rotating) {
       console.log("Rotation Started - Hiding Markers");
+      setDisableMarkersInteraction(true);
       setShowMarkers(false); // Hide markers when rotating
   } else {
       console.log("Rotation Stopped");
+      setDisableMarkersInteraction(false);
   }
 };
 
@@ -62,6 +65,7 @@ useEffect(() => {
             width: "15px",
             height: "15px",
             transform: "translate(-50%, -50%)",
+            pointerEvents: disableMarkersInteraction ? 'none' : 'auto', // Disable interaction with markers when rotating
           }}
         >
           <span className="sr-only">{part.name}</span>
