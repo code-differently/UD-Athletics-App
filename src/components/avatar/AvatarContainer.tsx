@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
@@ -17,7 +17,6 @@ const AvatarContainer: React.FC = () => {
     { id: "left-leg", name: "Left Leg", position: { x: "40%", y: "70%" } },
     { id: "right-leg", name: "Right Leg", position: { x: "60%", y: "70%" } },
   ];
-  
 
   const handleClick = (part: string) => {
     alert(`You clicked on ${part}`);
@@ -78,7 +77,6 @@ useEffect(() => {
         className="absolute bottom-0.5 left-1/2 transform -translate-x-1/2 p-2 bg-gray-800 text-white rounded-lg transition-all duration-300">Learn More!
         </button>
     </div>
-
   );
 };
 
