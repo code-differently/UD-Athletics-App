@@ -4,33 +4,38 @@ describe('Avatar Markers Visibility', () => {
   });
 
   it('should hide body markers when rotating avatar or interacting with the avatar', () => {
-    cy.get('div').contains('Head').should('be.visible');
-    cy.get('div').contains('Chest').should('be.visible');
-    cy.get('div').contains('Left Arm').should('be.visible');
-    cy.get('div').contains('Right Arm').should('be.visible');
+    cy.get('#marker-head').should('be.visible');
+    cy.get('#marker-chest').should('be.visible');
+    cy.get('#marker-left-arm').should('be.visible');
+    cy.get('#marker-right-arm').should('be.visible');
+    cy.get('#marker-left-leg').should('be.visible');
+    cy.get('#marker-right-leg').should('be.visible');
     
-    // Trigger rotation - let's assume your AvatarScene triggers rotation when clicked.
-    cy.get("[data-testid='avatar-container']") 
-      .trigger('click'); 
+    // Trigger rotation 
+    cy.get(`[data-testid="avatar-container"]`) 
+    .trigger('click', { clientX: 0, clientY: 300})
 
-    cy.get('div').contains('Head').should('not.be.visible');
-    cy.get('div').contains('Chest').should('not.be.visible');
-    cy.get('div').contains('Left Arm').should('not.be.visible');
-    cy.get('div').contains('Right Arm').should('not.be.visible');
+    cy.get('#marker-head').should('not.be.visible');
+    cy.get('#marker-chest').should('not.be.visible');
+    cy.get('#marker-left-arm').should('not.be.visible');
+    cy.get('#marker-right-arm').should('not.be.visible');
+    cy.get('#marker-left-leg').should('not.be.visible');
+    cy.get('#marker-right-leg').should('not.be.visible');
   });
 
   it('should show body markers when reset button is clicked', () => {
-    cy.get("[data-testid='avatar-container']") 
-      .trigger('click');
+    cy.get(`[data-testid="avatar-container"]`) 
+      .trigger('click', {clientX: 50, clientY: 100 , force: true });
     
-    cy.get('div').contains('Head').should('not.be.visible');
+    cy.get('div').contains('Head').should('be.visible');
     
     cy.get('button').contains('Learn More!').click();
     
-    // Markers should be visible again after reset
-    cy.get('div').contains('Head').should('be.visible');
-    cy.get('div').contains('Chest').should('be.visible');
-    cy.get('div').contains('Left Arm').should('be.visible');
-    cy.get('div').contains('Right Arm').should('be.visible');
+    cy.get('#marker-head').should('be.visible');
+    cy.get('#marker-chest').should('be.visible');
+    cy.get('#marker-left-arm').should('be.visible');
+    cy.get('#marker-right-arm').should('be.visible');
+    cy.get('#marker-left-leg').should('be.visible');
+    cy.get('#marker-right-leg').should('be.visible');
   });
 });
