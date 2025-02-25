@@ -4,17 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import ResetButton from "./ResetButton";
 import { BeatLoader } from "react-spinners";
 import HelpIcon from "../HelpIcon"; 
 
 
-const AvatarScene = () => {
+const AvatarScene = ({ onRotate, resetTrigger }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const controlsRef = useRef<OrbitControls | null>(null);
   const avatarRef = useRef<THREE.Group | null>(null);
-  const [resetTrigger, setResetTrigger] = useState(0);
   const [avatarRotation, setAvatarRotation] = useState<number>(0);
   const [isHelpVisible, setIsHelpVisible] = useState(false); // For help text visibility
   let rotationTimeout: NodeJS.Timeout | null = null;
@@ -157,17 +155,21 @@ const AvatarScene = () => {
       event.preventDefault(); // Prevent scrolling or other gestures
     };
 
-    const onTouchEnd = () => {
-      isTouching = false;
-    };
+    const startRotation = () => {
+      onRotate(true); // Notify parent
+      if (rotationTimeout) clearTimeout(rotationTimeout);
+  };
 
+  const stopRotation = () => {
+      if (rotationTimeout) clearTimeout(rotationTimeout);
+  };
     containerRef.current.addEventListener("touchstart", onTouchStart, {
       passive: false,
     });
     containerRef.current.addEventListener("touchmove", onTouchMove, {
       passive: false,
     });
-    containerRef.current.addEventListener("touchend", onTouchEnd);
+    onRotate(true);
 
     // Animation loop
     const animate = () => {
@@ -198,7 +200,6 @@ const AvatarScene = () => {
       controlsRef.current.target.set(0, 0, 0);
       controlsRef.current.update();
     }
-    setResetTrigger((prev) => prev + 1);
   };
 
   // Help toggle function
