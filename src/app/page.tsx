@@ -14,7 +14,7 @@ export default function Page() {
 
   return (
     <main className="min-h-screen relative">
-      <Header />
+      {/* Page title */}
       <h1 className="text-4xl font-bold mb-8">Avatar Model Page</h1>
       <AvatarContainer />
     </main>
