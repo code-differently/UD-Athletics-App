@@ -1,92 +1,108 @@
 "use client";
 
-// Importing necessary React features to handle component behavior.
 import { useEffect, useRef, useState } from "react";
-//This is Three.js being imported to handle 3D graphics 
 import * as THREE from "three"; 
-
-// Importing additional Three.js tools:
-// - OrbitControls: Lets users rotate, zoom, and move around the 3D scene.
-// - FBXLoader: Loads 3D models that use the FBX file format.
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; 
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-
-// Importing other React components for user interaction.
 import ResetButton from "./ResetButton";
-import HelpIcon from "../HelpIcon"; // A help button that provides guidance.
+import HelpIcon from "../HelpIcon"; 
 
-// AvatarScene Component
-// This component is where the 3D football avatar is displayed for users to rotate and interact with
-// It also includes a reset button (imported) to reset the view and a help icon for additional guidance 
+
+// Constants for configuration
+const LIGHT_GRAY_HEX = 0xf0f0f0;
+const WHITE_HEX = 0xffffff;
+const INITIAL_CAMERA_POSITION = { x: 0, y: 1.5, z: 3 };
+const SCENE_SIZE = { width: 300, height: 300 };
+const AMBIENT_LIGHT_INTENSITY = 0.5;
+const DIRECTIONAL_LIGHT_INTENSITY = 0.8;
+const ROTATION_Y_INITIAL = -Math.PI / 2;
+const TOUCH_SENSITIVITY = 0.005;
+const FOV = 75;
+const NEAR_CLIP = 0.1;
+const FAR_CLIP = 1000;
+const HELP_BOX_STYLES = {
+  background: "rgba(0, 83, 159, 0.8)",
+  color: "white",
+  padding: "10px 20px",
+  borderRadius: "5px",
+  zIndex: 1000,
+  maxWidth: "250px",
+};
+
+/**
+ * This component is where the 3D football avatar is displayed for users to rotate and interact with
+ * It also includes a reset button (imported) to reset the view and a help icon for additional guidance 
+ */
+
 const AvatarScene = () => {
-  // **References (Think of these as "pointers" to different parts of the 3D scene)**
+  // References (Think of these as "pointers" to different parts of the 3D scene)
   const containerRef = useRef<HTMLDivElement>(null); // The space where the 3D model appears.
   const controlsRef = useRef<OrbitControls | null>(null); // Camera controls for rotation and zoom.
   const avatarRef = useRef<THREE.Group | null>(null); // The actual 3D avatar model. 
 
   
-  // **State Variables (Track important information about the avatar)**
-  const [isLoading, setIsLoading] = useState(true); // Tracks if the avatar is still loading 
-  const [resetTrigger, setResetTrigger] = useState(0); // Used to trigger the avatar reset.
-  const [avatarRotation, setAvatarRotation] = useState<number>(0); // Stores the avatar’s rotation angle.
-  const [isHelpVisible, setIsHelpVisible] = useState(false); // Controls whether help text is shown.
+  // State Variables (Track important information about the avatar)
+  const [isLoading, setIsLoading] = useState(true); 
+  const [resetTrigger, setResetTrigger] = useState(0); 
+  const [avatarRotation, setAvatarRotation] = useState<number>(0); 
+  const [isHelpVisible, setIsHelpVisible] = useState(false); 
 
-  // **Runs when the component is first added to the page**
+  // Runs when the component is first added to the page
   useEffect(() => {
     if (!containerRef.current) return; // Stop if there's no container to place the 3D model in.
     
-    // **Setting up the 3D scene**
+    // Setting up the 3D scene
     const scene = new THREE.Scene(); // Creates an empty 3D world.
-    scene.background = new THREE.Color(0xf0f0f0); //background color of the scene (currently light gray)
+    scene.background = new THREE.Color(LIGHT_GRAY_HEX); 
 
-    // **Creating the Camera**
-    const camera = new THREE.PerspectiveCamera(75, 300 / 300, 0.1, 1000); // Defines the camera view.
-    camera.position.set(0, 1.5, 3); // Places the camera at an angle in front of the avatar.
+    // Creating the Camera
+    const camera = new THREE.PerspectiveCamera(FOV, SCENE_SIZE.width / SCENE_SIZE.height, NEAR_CLIP, FAR_CLIP); 
+    camera.position.set(INITIAL_CAMERA_POSITION.x, INITIAL_CAMERA_POSITION.y, INITIAL_CAMERA_POSITION.z); // Places the camera at an angle in front of the avatar.
 
-    // **Setting up the Renderer**
+    // Setting up the Renderer
     const renderer = new THREE.WebGLRenderer({ antialias: true }); // Creates a renderer for smooth 3D graphics.
-    renderer.setSize(300, 300); // Makes the 3D display area 300x300 pixels.
+    renderer.setSize(SCENE_SIZE.width, SCENE_SIZE.height); 
     containerRef.current.appendChild(renderer.domElement); // Adds the 3D scene to the webpage.
 
-    // **Adding Light Sources**
-    const light = new THREE.AmbientLight(0xffffff, 0.5); // A soft, even light.
+    // Adding Light Sources
+    const light = new THREE.AmbientLight(WHITE_HEX, AMBIENT_LIGHT_INTENSITY); 
     scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); // A brighter light from one direction. To highlight the model
+    const directionalLight = new THREE.DirectionalLight(WHITE_HEX, DIRECTIONAL_LIGHT_INTENSITY); 
     directionalLight.position.set(1, 1, 1).normalize();
     scene.add(directionalLight);
 
-    // **Enabling Camera Controls**
+    // Enabling Camera Controls
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;// Smooth movement.
-    controls.dampingFactor = 0.25; // How much damping (slowing down) occurs.
-    controls.enableZoom = true; // Allow zooming in and out.
-    controlsRef.current = controls; // Store the controls for future use.
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25; 
+    controls.enableZoom = true; 
+    controlsRef.current = controls; 
 
-    // **Preparing for Mouse Click Detection**
+    // Preparing for Mouse Click Detection
     const raycaster = new THREE.Raycaster(); // Helps detect where users click.
     const mouse = new THREE.Vector2(); // Stores where the mouse is on the screen.
     let avatar: THREE.Group | THREE.Mesh;
 
-   // **Loading the 3D Avatar**
+   // Loading the 3D Avatar
     const loader = new FBXLoader();
     loader.load(
-      "/models/UDavatar.fbx", // The 3D model file location.
+      "/models/UDavatar.fbx", 
       (object) => {
         avatarRef.current = object;
-        object.scale.set(0.01, 0.01, 0.01); // Shrinks the model to a proper size.
+        object.scale.set(0.01, 0.01, 0.01); 
         scene.add(object);
 
-        object.rotation.y = -Math.PI / 2; // Rotates the avatar to face forward.
+        object.rotation.y = ROTATION_Y_INITIAL; // Rotates the avatar to face forward.
         setAvatarRotation(object.rotation.y);
         scene.add(object); // Adds the avatar to the scene.
 
-        // **Centering the Model**
+        // Centering the Model
         const box = new THREE.Box3().setFromObject(object); // Finds the model’s size.
         const center = box.getCenter(new THREE.Vector3());
         object.position.sub(center); // Moves it to the center.
         object.position.y = -center.y; // Adjusts height so it sits correctly.
 
-        // **Adjusting Camera Distance Based on Avatar Size**
+        // Adjusting Camera Distance Based on Avatar Size
         const modelSize = box.getSize(new THREE.Vector3());
         const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z);
         const cameraDistance =
@@ -103,7 +119,7 @@ const AvatarScene = () => {
       },
     );
 
-    // **Handling Mouse Clicks on the 3D Avatar**
+    // Handling Mouse Clicks on the 3D Avatar
     const onMouseClick = (event: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
@@ -120,7 +136,7 @@ const AvatarScene = () => {
 
     containerRef.current.addEventListener("click", onMouseClick);
 
-    // **Handling Touch Input (For Mobile Devices)**
+    // Handling Touch Input (For Mobile Devices)
     let startTouch = { x: 0, y: 0 };
     let isTouching = false;
 
@@ -168,7 +184,7 @@ const AvatarScene = () => {
     });
     containerRef.current.addEventListener("touchend", onTouchEnd);
 
-    // **Continuous Animation Loop**
+    // Continuous Animation Loop
     const animate = () => {
       requestAnimationFrame(animate); // Keep updating the scene.
       controls.update(); 
@@ -186,11 +202,11 @@ const AvatarScene = () => {
     };
   }, [resetTrigger]);
 
-  // **Reset the Avatar's rotation and Camera view**
+  // Reset the Avatar's rotation and Camera view
   const resetAvatar = () => {
     if (avatarRef.current && controlsRef.current) {
-      avatarRef.current.rotation.set(0, -Math.PI / 2, 0);
-      setAvatarRotation(-Math.PI / 2);
+      avatarRef.current.rotation.set(0, ROTATION_Y_INITIAL, 0);
+      setAvatarRotation(ROTATION_Y_INITIAL);
       controlsRef.current.target.set(0, 0, 0);
       controlsRef.current.update();
     }
@@ -208,28 +224,21 @@ const AvatarScene = () => {
   };
 
   return (
-    <div style={{ position: "relative", width: 300, height: 300 }}>
+    <div style={{ position: "relative", width: SCENE_SIZE.width, height: SCENE_SIZE.height }}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }}>
-        {isLoading && <p>Loading Avatar...</p>} {/* Show loading text while avatar is loading */}
+        {isLoading && <p>Loading Avatar...</p>} 
       </div>
       <ResetButton onReset={resetAvatar} />
 
-      {/* Help Icon at the top-left */}
       <HelpIcon onClick={toggleHelp} />
 
-      {/* Help Text at the top-left*/}
       {isHelpVisible && (
         <div
           style={{
             position: "absolute",
             bottom: "10px",
             left: "10px",
-            background: "rgba(0, 83, 159, 0.8)", // Same background as the Help Icon
-            color: "white",
-            padding: "10px 20px",
-            borderRadius: "5px",
-            zIndex: 1000,
-            maxWidth: "250px",
+            ...HELP_BOX_STYLES
           }}
         >
           <div
