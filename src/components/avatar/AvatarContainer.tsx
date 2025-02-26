@@ -3,6 +3,7 @@ import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
 const AvatarContainer: React.FC = () => {
+// List of body parts with their names and where they should be placed on the screen.
   const bodyParts = [
     { name: "Head", position: { x: "50.4%", y: "15%" } },
     { name: "Chest", position: { x: "50%", y: "50%" } },
@@ -12,8 +13,9 @@ const AvatarContainer: React.FC = () => {
     { name: "Right Leg", position: { x: "60%", y: "70%" } },
   ];
 
+  // Function that shows an alert when a body part is clicked.
   const handleClick = (part: string) => {
-    alert(`You clicked on ${part}`);
+    alert(`You clicked on ${part}`); // Show the name of the part clicked.
   };
 
   return (
@@ -25,14 +27,14 @@ const AvatarContainer: React.FC = () => {
       {bodyParts.map((part, index) => (
         <div
           key={index}
-          onClick={() => handleClick(part.name)}
+          onClick={() => handleClick(part.name)} // When clicked, show the part's name
           className="absolute bg-blue-500 rounded-full opacity-75 hover:opacity-100 transition cursor-pointer"
           style={{
             top: part.position.y,
             left: part.position.x,
             width: "15px",
             height: "15px",
-            transform: "translate(-50%, -50%)",
+            transform: "translate(-50%, -50%)", // Center the dot exactly on the body part
           }}
         >
           <span className="sr-only">{part.name}</span>
