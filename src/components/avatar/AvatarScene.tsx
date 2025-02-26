@@ -38,9 +38,9 @@ const HELP_BOX_STYLES = {
 
 const AvatarScene = () => {
   // References (Think of these as "pointers" to different parts of the 3D scene)
-  const containerRef = useRef<HTMLDivElement>(null); // The space where the 3D model appears.
-  const controlsRef = useRef<OrbitControls | null>(null); // Camera controls for rotation and zoom.
-  const avatarRef = useRef<THREE.Group | null>(null); // The actual 3D avatar model. 
+  const containerRef = useRef<HTMLDivElement>(null); 
+  const controlsRef = useRef<OrbitControls | null>(null); 
+  const avatarRef = useRef<THREE.Group | null>(null); 
 
   
   // State Variables (Track important information about the avatar)
@@ -49,7 +49,6 @@ const AvatarScene = () => {
   const [avatarRotation, setAvatarRotation] = useState<number>(0); 
   const [isHelpVisible, setIsHelpVisible] = useState(false); 
 
-  // Runs when the component is first added to the page
   useEffect(() => {
     if (!containerRef.current) return; // Stop if there's no container to place the 3D model in.
     
@@ -96,27 +95,27 @@ const AvatarScene = () => {
 
         object.rotation.y = ROTATION_Y_INITIAL; // Rotates the avatar to face forward.
         setAvatarRotation(object.rotation.y);
-        scene.add(object); // Adds the avatar to the scene.
+        scene.add(object); 
 
         // Centering the Model
         const box = new THREE.Box3().setFromObject(object); // Finds the model’s size.
         const center = box.getCenter(new THREE.Vector3());
-        object.position.sub(center); // Moves it to the center.
-        object.position.y = -center.y; // Adjusts height so it sits correctly.
+        object.position.sub(center); 
+        object.position.y = -center.y; 
 
         // Adjusting Camera Distance Based on Avatar Size
         const modelSize = box.getSize(new THREE.Vector3());
         const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z);
         const cameraDistance =
           maxDimension / (2 * Math.tan((Math.PI * camera.fov) / 360));
-        camera.position.set(0, 0, cameraDistance * 1.5); // Positions the camera at a good distance.
+        camera.position.set(0, 0, cameraDistance * 1.5); 
         controls.target.set(0, center.y, 0);
         controls.update();
-        setIsLoading(false); // Mark loading as complete.
+        setIsLoading(false); 
       },
       undefined,
       (error) => {
-        console.error("Error loading avatar model:", error); // Show an error if loading fails.
+        console.error("Error loading avatar model:", error); 
         setIsLoading(false); // Stop showing the loading message even if there is an error.
       },
     );
@@ -157,16 +156,13 @@ const AvatarScene = () => {
       const deltaX = touch.clientX - startTouch.x;
       const deltaY = touch.clientY - startTouch.y;
 
-      // When the user drags their finger across the screen, the avatar rotates.
-      // Moving left/right rotates it horizontally, and moving up/down rotates it vertically.
-      // The small numbers adjust how sensitive the rotation is.
-      avatar.rotation.y += deltaX * 0.005; 
-      avatar.rotation.x -= deltaY * 0.005; 
+      avatar.rotation.y += deltaX * TOUCH_SENSITIVITY; 
+      avatar.rotation.x -= deltaY * TOUCH_SENSITIVITY; 
       setAvatarRotation(avatar.rotation.y);
 
       // Limit vertical rotation to avoid flipping the avatar.
       if (avatar.rotation.x > Math.PI / 2) avatar.rotation.x = Math.PI / 2;
-      if (avatar.rotation.x < -Math.PI / 2) avatar.rotation.x = -Math.PI / 2;
+      if (avatar.rotation.x < ROTATION_Y_INITIAL) avatar.rotation.x = ROTATION_Y_INITIAL;
 
       startTouch.x = touch.clientX;
       startTouch.y = touch.clientY;
@@ -204,7 +200,6 @@ const AvatarScene = () => {
     };
   }, [resetTrigger]);
 
-  // Reset the Avatar's rotation and Camera view
   const resetAvatar = () => {
     if (avatarRef.current && controlsRef.current) {
       avatarRef.current.rotation.set(0, ROTATION_Y_INITIAL, 0);
@@ -215,12 +210,10 @@ const AvatarScene = () => {
     setResetTrigger((prev) => prev + 1);
   };
 
-  // Help text visibility 
   const toggleHelp = () => {
     setIsHelpVisible(!isHelpVisible);
   };
 
-  // Close the help text
   const closeHelp = () => {
     setIsHelpVisible(false);
   };
