@@ -8,7 +8,9 @@ import ResetButton from "./ResetButton";
 import HelpIcon from "../HelpIcon"; 
 
 
-// Constants for configuration
+/**
+ * Constants for configuration
+ */
 const LIGHT_GRAY_HEX = 0xf0f0f0;
 const WHITE_HEX = 0xffffff;
 const INITIAL_CAMERA_POSITION = { x: 0, y: 1.5, z: 3 };
