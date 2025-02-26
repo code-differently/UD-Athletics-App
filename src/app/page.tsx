@@ -1,21 +1,7 @@
-'use client' // Ensures this component runs on the client side in a Next.js app
-
-import { useState, useEffect } from 'react';
-import Header from '../components/header/Header';
-import AvatarContainer from '../components/avatar/AvatarContainer';
-
-// Summary for Developers:
-// This React component, Page, serves as the main structure for the avatar model page. 
-// It includes a header, a title, and an avatar container. 
-// The component utilizes the useState hook to control the visibility of a help message 
-// and the useEffect hook to automatically hide it after 5 seconds using a timeout. 
-// This approach ensures a smooth user experience by displaying the help temporarily.
-
-// Summary for Non-Developers:
-// This code builds a webpage that displays an avatar model. 
-// It has a header at the top, a title, and a section where the avatar appears. 
-// A help message appears when the page loads but disappears after 5 seconds to avoid clutter. 
-// This makes sure users get guidance at the start but don’t get distracted afterward.
+"use client";
+import { useState, useEffect } from "react";
+import Header from "../components/header/Header";
+import AvatarContainer from "../components/avatar/AvatarContainer";
 
 export default function Page() {
   // State to control the visibility of the help message
@@ -41,7 +27,6 @@ export default function Page() {
 
       {/* Render the avatar container component */}
       <AvatarContainer />
-
     </main>
   );
 }

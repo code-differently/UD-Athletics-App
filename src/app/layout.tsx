@@ -1,18 +1,7 @@
 import React from "react";
-import './globals.css'; // Import global CSS styles
-import { Inter } from "next/font/google"; // Import the Inter font from Google Fonts
-import type { Metadata } from "next"; // Import Metadata type from Next.js
-
-// Summary for Developers:
-// This is the RootLayout component, which serves as the main layout for a Next.js application. 
-// It applies global styles, sets up metadata (title and description), and wraps all page content. 
-// The Inter font is imported and applied to the body. 
-// This component ensures consistency across all pages and provides essential HTML structure.
-
-// Summary for Non-Developers:
-// This code helps create the overall structure of a webpage. 
-// It defines a common layout, including styles, fonts, and metadata (like the page title and description). 
-// It makes sure every page in the app has a uniform look and works well on different devices.
+import "./globals.css";
+import { Inter } from "next/font/google";
+import type { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
