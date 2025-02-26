@@ -11,11 +11,12 @@ export const metadata: Metadata = {
   description: "Interact with the avatar to learn more",
 };
 
-// RootLayout component wraps all pages, ensuring a consistent structure
+// RootLayout component serves as the foundation for all pages,  
+// ensuring they have a consistent structure and layout 
 export default function RootLayout({
-  children, // Represents the content inside each page
+  children, // Represents the actual content of each page that this layout wraps
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode; // This tells TypeScript that 'children' can be any valid React element(s)  
 }) {
   return (
     <html lang="en">
@@ -25,7 +26,7 @@ export default function RootLayout({
         {/* Add more meta tags here if needed */}
       </head>
       <body className={inter.className}>
-        {/* Render the page's content inside the body */}
+         {/* This is where the content of each page will be displayed */}
         {children}
       </body>
     </html>
