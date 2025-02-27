@@ -190,7 +190,7 @@ const AvatarScene = () => {
     };
     animate();
 
-    // When this component is removed from the page, we clean up the 3D scene.
+    // When AvatarScene is removed from the page, we clean up the 3D scene.
     // This prevents memory leaks and ensures performance stays smooth.
     return () => {
       if (containerRef.current) {
