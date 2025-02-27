@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  * The root layout for all pages.
  */
 export default function RootLayout({
-  children, // Represents the actual content of each page that this layout wraps
+  children, 
 }: {
   children: React.ReactNode; 
 }) {

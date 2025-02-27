@@ -53,7 +53,7 @@ const AvatarScene = () => {
     if (!containerRef.current) return; // Stop if there's no container to place the 3D model in.
     
     // Setting up the 3D scene
-    const scene = new THREE.Scene(); // Creates an empty 3D world.
+    const scene = new THREE.Scene(); 
     scene.background = new THREE.Color(LIGHT_GRAY_HEX); 
 
     // Creating the Camera
@@ -61,7 +61,7 @@ const AvatarScene = () => {
     camera.position.set(INITIAL_CAMERA_POSITION.x, INITIAL_CAMERA_POSITION.y, INITIAL_CAMERA_POSITION.z); // Places the camera at an angle in front of the avatar.
 
     // Setting up the Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true }); // Creates a renderer for smooth 3D graphics.
+    const renderer = new THREE.WebGLRenderer({ antialias: true }); 
     renderer.setSize(SCENE_SIZE.width, SCENE_SIZE.height); 
     containerRef.current.appendChild(renderer.domElement); // Adds the 3D scene to the webpage.
 
@@ -84,7 +84,7 @@ const AvatarScene = () => {
     const mouse = new THREE.Vector2(); // Stores where the mouse is on the screen.
     let avatar: THREE.Group | THREE.Mesh;
 
-   // Loading the 3D Avatar
+    // Loading the 3D Avatar
     const loader = new FBXLoader();
     loader.load(
       "/models/UDavatar.fbx", 
@@ -116,7 +116,7 @@ const AvatarScene = () => {
       undefined,
       (error) => {
         console.error("Error loading avatar model:", error); 
-        setIsLoading(false); // Stop showing the loading message even if there is an error.
+        setIsLoading(false); 
       },
     );
 
