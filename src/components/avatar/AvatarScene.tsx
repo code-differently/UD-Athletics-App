@@ -48,6 +48,7 @@ const AvatarScene = ({ onRotate, resetTrigger }) => {
     controls.dampingFactor = 0.25;
     controls.enableZoom = true;
     controlsRef.current = controls;
+    
     controls.addEventListener("start", () => {
       console.log("Rotation started!");
       onRotate(true); // Hide markers when rotation starts
@@ -57,15 +58,6 @@ const AvatarScene = ({ onRotate, resetTrigger }) => {
       setTimeout(() => onRotate(false), 1000); // Delay to prevent flickering
   });
   
-
-  controls.addEventListener("start", () => {
-      console.log("Rotation started!");
-      onRotate(true); // Hide markers when rotation starts
-  });
-  controls.addEventListener("end", () => {
-      console.log("Rotation ended!");
-      setTimeout(() => onRotate(false), 1000); // Delay to prevent flickering
-  });
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
     let avatar: THREE.Group | THREE.Mesh;
