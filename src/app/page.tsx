@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Header from "../components/header/Header";
 import AvatarContainer from "../components/avatar/AvatarContainer";
 
 export default function Page() {
