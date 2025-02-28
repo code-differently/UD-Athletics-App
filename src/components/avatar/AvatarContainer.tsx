@@ -1,8 +1,11 @@
 "use client";
+
 import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
+
 const AvatarContainer: React.FC = () => {
+
   const bodyParts = [
     { name: "Head", position: { x: "50.4%", y: "15%" } },
     { name: "Chest", position: { x: "50%", y: "50%" } },
@@ -13,19 +16,17 @@ const AvatarContainer: React.FC = () => {
   ];
 
   const handleClick = (part: string) => {
-    alert(`You clicked on ${part}`);
+    alert(`You clicked on ${part}`); 
   };
 
   return (
     <div className="relative w-[300px] h-[300px]">
-      {/* Avatar Scene (3D Model) */}
       <AvatarScene />
 
-      {/* Overlay clickable markers */}
       {bodyParts.map((part, index) => (
         <div
-          key={index}
-          onClick={() => handleClick(part.name)}
+          key={index} 
+          onClick={() => handleClick(part.name)} 
           className="absolute bg-blue-500 rounded-full opacity-75 hover:opacity-100 transition cursor-pointer"
           style={{
             top: part.position.y,
