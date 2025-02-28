@@ -1,8 +1,11 @@
 "use client";
+
 import AvatarScene from "./AvatarScene";
 import React, { useEffect, useState } from "react";
 
+
 const AvatarContainer: React.FC = () => {
+
   const [isRotating, setIsRotating] = useState(false);
     const [showMarkers, setShowMarkers] = useState(true);
     const [resetTrigger, setResetTrigger] = useState(0);
@@ -19,7 +22,7 @@ const AvatarContainer: React.FC = () => {
   ];
 
   const handleClick = (part: string) => {
-    alert(`You clicked on ${part}`);
+    alert(`You clicked on ${part}`); 
   };
 
   const resetAvatar = () => {
@@ -45,14 +48,12 @@ useEffect(() => {
 
   return (
     <div className="relative w-[300px] h-[300px]">
-      {/* Avatar Scene (3D Model) */}
       <AvatarScene 
       onRotate={handleRotate}
       resetTrigger={resetTrigger}
       />
 
-       {/* Overlay clickable markers */}
-       { showMarkers && 
+        { showMarkers && 
        bodyParts.map((part, index) => (
         <div
           key={index}
