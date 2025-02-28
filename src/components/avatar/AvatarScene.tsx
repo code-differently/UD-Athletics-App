@@ -4,9 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three"; 
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"; 
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
-import ResetButton from "./ResetButton";
 import HelpIcon from "../HelpIcon"; 
-
 
 /**
  * Constants for configuration
@@ -247,9 +245,7 @@ const AvatarScene = ({ onRotate, resetTrigger }) => {
         <div style={{ position: "relative", width: 300, height: 300 }}>
             <div ref={containerRef} data-testid="avatar-container" style={{ width: SCENE_SIZE.width, height: SCENE_SIZE.height }}>
                 {isLoading && (
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <BeatLoader size={40} color="#3498db" loading={isLoading} />
-          </div>
+          <p>Loading Avatar...</p>
         )}
             </div>
 
